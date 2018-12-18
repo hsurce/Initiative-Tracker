@@ -1,4 +1,4 @@
-// Import of libraries.
+package sample;// Import of libraries.
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,7 +21,6 @@ public class Main extends Application {
     TableView<Product> table;
     TextField characternameInput, initiativerollInput, dexscoreInput, extranotesInput;
     String sortedColumn = "Initiative List";
-    String s;
 
     // Main function call.
     public static void main(String[] args) {
