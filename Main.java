@@ -20,7 +20,6 @@ public class Main extends Application {
     TableView<Product> table;
     TextField characternameInput, initiativerollInput, dexscoreInput, extranotesInput;
     String sortedColumn = "Initiative List";
-    String s;
 
     // Main function call.
     public static void main(String[] args) {
