@@ -22,6 +22,7 @@ public class Main extends Application {
     Stage window;
     TableView<Product> table;
     TextField characternameInput, initiativerollInput, dexscoreInput, extranotesInput;
+    String sortedColumn = "Initiative List";
 
     // Main function call.
     public static void main(String[] args) {
@@ -60,6 +61,11 @@ public class Main extends Application {
         DexScoreColumn.setMinWidth(100);
         DexScoreColumn.setCellValueFactory(new PropertyValueFactory<>("DexScore"));
 
+        //Initiative list column.
+        TableColumn<Product, Integer> InitiativeListColumn = new TableColumn<>("Initiative List");
+        InitiativeListColumn.setMinWidth(130);
+        InitiativeListColumn.setCellValueFactory(new PropertyValueFactory<>("FinalInitiative"));
+
         //Character Name Input.
         characternameInput = new TextField();
         characternameInput.setPromptText("Character Name");
@@ -94,7 +100,13 @@ public class Main extends Application {
         //Get TableItems.
         table = new TableView<>();
         table.setItems(getProduct());
-        table.getColumns().addAll(CharacterNameColumn, InitiativeRollColumn, ExtraNotesColumn, DexScoreColumn);
+        table.getColumns().addAll(CharacterNameColumn, InitiativeRollColumn, ExtraNotesColumn, DexScoreColumn, InitiativeListColumn);
+         /**Reversing the sort order, such that the highest initiative will be first.
+         The program will always default to this sort order if the list is refreshed.
+         This will result in the user losing their self-selected sorting order, if they've made one.
+         */
+        InitiativeListColumn.setComparator(InitiativeListColumn.getComparator().reversed());
+        table.getSortOrder().add(InitiativeListColumn);
         //VBox.
         VBox vBox = new VBox();
         vBox.getChildren().addAll(table, hBox);
@@ -109,20 +121,20 @@ public class Main extends Application {
     public void addButtonClicked(){
         Product product = new Product();
         product.setCharacterName(characternameInput.getText());
+        /**
+         * Try/catching to make sure that the program doesn't crash in case of malicious use of the Integer-only fields.
+         */
         try {
             product.setInitiativeRoll(initiativerollInput.getText());
             product.setExtraNotes(extranotesInput.getText());
             product.setDexScore(Integer.parseInt(dexscoreInput.getText()));
             table.getItems().add(product);
         }
-
         catch(NumberFormatException e){
             System.out.println("Non-numeric value inserted in numeric field or a field was left blank; Please try again.");
 
         }
-        if(table.getItems().size() != 0) {
-            System.out.println(table.getItems().size());
-        }
+        table.getSortOrder().addAll(getColumn(sortedColumn));
         characternameInput.clear();
         initiativerollInput.clear();
         extranotesInput.clear();
@@ -140,11 +152,24 @@ public class Main extends Application {
     //Get all of the products
     public ObservableList<Product> getProduct(){
         ObservableList<Product> products = FXCollections.observableArrayList();
-        products.add(new Product("Nicolai er gud", "20*", "Og det ved alle", 20));
+        products.add(new Product("Nicolai er gud", "20*", "Og det ved alle", 18));
         products.add(new Product("Jakob er gud", "21*", "Du ved det Nico", 21));
 
         return products;
     }
 
+    /** Gets a column from the TableView table, the argument is the name of the column (Not the PropertyValueFactory name).
+     *
+     * @param s
+     * @return TableColumn found in the list of tables, matching the parameter s. If none is found, it returns null.
+     */
+    public TableColumn getColumn(String s){
+        for(int i = 0; i < table.getColumns().size();i++){
+            if(table.getColumns().get(i).getText()== s){
+                return table.getColumns().get(i);
+            }
+        }
+        return null;
+    }
 
 }

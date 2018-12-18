@@ -1,56 +1,89 @@
 package sample;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Product {
 
-    private String charactername;
-    private String initiativeroll;
-    private String extranotes;
-    private Integer dexscore;
+    private String characterName;
+    private String initiativeRoll;
+    private String extraNotes;
+    private Integer dexScore;
+    private Integer finalInitiative;
+    private Pattern p;
+    private Matcher m;
+
 
     public Product(){
-        this.charactername = "";
-        this.initiativeroll = "";
-        this.extranotes = "";
-        this.dexscore = 0;
+        this.characterName = "";
+        this.initiativeRoll = "";
+        this.extraNotes = "";
+        this.dexScore = 0;
+        this.finalInitiative = 0;
     }
 
-    public Product(String charactername, String initiativeroll, String extranotes, Integer dexscore) {
-        this.charactername = charactername;
-        this.initiativeroll = initiativeroll;
-        this.extranotes = extranotes;
-        this.dexscore = dexscore;
+    public Product(String characterName, String initiativeRoll, String extraNotes, Integer dexScore) {
+        this.characterName = characterName;
+        this.initiativeRoll = initiativeRoll;
+        this.extraNotes = extraNotes;
+        this.dexScore = dexScore;
+        calcFinalInitiative();
     }
 
     public String getCharacterName() {
-        return charactername;
+        return characterName;
     }
 
     public void setCharacterName(String charactername) {
-        this.charactername = charactername;
+        this.characterName = charactername;
     }
 
     public String getInitiativeRoll() {
-        return initiativeroll;
+        return initiativeRoll;
     }
 
     public void setInitiativeRoll(String initiativeroll) {
-        this.initiativeroll = initiativeroll;
+        this.initiativeRoll = initiativeroll;
+        if(dexScore != 0) calcFinalInitiative();
     }
 
     public String getExtraNotes() {
-        return extranotes;
+        return extraNotes;
     }
 
     public void setExtraNotes(String extranotes) {
-        this.extranotes = extranotes;
+        this.extraNotes = extranotes;
     }
 
     public int getDexScore() {
-        return dexscore;
+        return dexScore;
     }
 
     public void setDexScore(int dexscore) {
-        this.dexscore = dexscore;
+        this.dexScore = dexscore;
+        if(initiativeRoll != "") calcFinalInitiative();
     }
 
+    public Integer getFinalInitiative() {
+        return finalInitiative;
+    }
+
+    /**This calculates the final initiative score.
+     * This will get called if the dex score or initiative roll changes, but only if both have actual values.
+     * Uses a regular expression to ensure that the initiativeRoll string is parsable.
+     */
+    private void calcFinalInitiative(){
+        int convertedDex = (dexScore -10)/2;
+        p = Pattern.compile("^[0-9]+$");
+        m = p.matcher(initiativeRoll);
+        if(m.find()){
+            this.finalInitiative = Integer.parseInt(initiativeRoll)+convertedDex;
+
+        }
+        else{
+            if(initiativeRoll.contains("*"));
+            this.finalInitiative = 100+convertedDex;
+        }
+
+    }
 }
