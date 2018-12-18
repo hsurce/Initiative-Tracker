@@ -22,7 +22,7 @@ public class Main extends Application {
 
     //Autosorts on the following string
     String sortedColumn = "Initiative List";
-
+    String sortedColumn2 = "Dex Score";
     // Main function call.
     public static void main(String[] args) {
         launch(args);
@@ -43,6 +43,7 @@ public class Main extends Application {
         /**
          * Generate columns
          */
+
         //Character Name column.
         TableColumn<Product, String> CharacterNameColumn = new TableColumn<>("Character Name");
         CharacterNameColumn.setMinWidth(200);
@@ -148,8 +149,8 @@ public class Main extends Application {
          * Try/catching to make sure that the program doesn't crash in case of malicious use of the Integer-only fields.
          */
         try {
-            product.setInitiativeRoll(initiativerollInput.getText());
             product.setExtraNotes(extranotesInput.getText());
+            product.setInitiativeRoll(initiativerollInput.getText());
             product.setDexScore(Integer.parseInt(dexscoreInput.getText()));
             table.getItems().add(product);
         }
@@ -193,6 +194,7 @@ public class Main extends Application {
      * @param s is the name of the column (Not the PropertyValueFactory name)
      * @return TableColumn found in the list of tables, matching the parameter s. If none is found, it returns null
      */
+
     private TableColumn getColumn(String s){
         for(int i = 0; i < table.getColumns().size();i++){
             if(table.getColumns().get(i).getText()== s){
