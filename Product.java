@@ -69,6 +69,7 @@ public class Product {
     /**This calculates the final initiative score.
      * This will get called if the dex score or initiative roll changes, but only if both have actual values.
      * Uses a regular expression to ensure that the initiativeRoll string is parsable.
+     * If the initiative roll contain a *, the value of the initiative is set to 100 and the dex bonus is added to ensure being top of the list
      */
     private void calcFinalInitiative(){
         int convertedDex = (dexScore -10)/2;

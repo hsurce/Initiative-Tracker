@@ -19,6 +19,8 @@ public class Main extends Application {
     Stage window;
     TableView<Product> table;
     TextField characternameInput, initiativerollInput, dexscoreInput, extranotesInput;
+
+    //Autosorts on the following string
     String sortedColumn = "Initiative List";
 
     // Main function call.
@@ -38,6 +40,9 @@ public class Main extends Application {
 
 // Adding columns for Character Name, Initiative Roll, Extra Notes, DEX Score.
 
+        /**
+         * Generate columns
+         */
         //Character Name column.
         TableColumn<Product, String> CharacterNameColumn = new TableColumn<>("Character Name");
         CharacterNameColumn.setMinWidth(200);
@@ -63,6 +68,10 @@ public class Main extends Application {
         InitiativeListColumn.setMinWidth(130);
         InitiativeListColumn.setCellValueFactory(new PropertyValueFactory<>("FinalInitiative"));
 
+        /**
+         * Generate input fields
+         */
+
         //Character Name Input.
         characternameInput = new TextField();
         characternameInput.setPromptText("Character Name");
@@ -80,6 +89,10 @@ public class Main extends Application {
         dexscoreInput = new TextField();
         dexscoreInput.setPromptText("DEX Score");
 
+        /**
+         * Generate buttons
+         */
+
         //Add Button + Event.
         Button addButton = new Button("Add");
         addButton.setOnAction(e -> addButtonClicked());
@@ -88,22 +101,33 @@ public class Main extends Application {
         Button deleteButton = new Button("Delete");
         deleteButton.setOnAction(e -> deleteButtonClicked());
 
+        /**
+         * Populate table and set sortOrder
+         */
+
+        //Get TableItems.
+        table = new TableView<>();
+        table.setItems(getProduct());
+        table.getColumns().addAll(CharacterNameColumn, InitiativeRollColumn, ExtraNotesColumn, DexScoreColumn, InitiativeListColumn);
+
+         /**Reversing the sort order, such that the highest initiative will be first.
+         The program will always default to this sort order if the list is refreshed.
+         */
+        InitiativeListColumn.setComparator(InitiativeListColumn.getComparator().reversed());
+        table.getSortOrder().add(InitiativeListColumn);
+
+
+        /**
+         * Generate Horizontal and Vertical boxes
+         */
+
         //HBox.
         HBox hBox = new HBox();
         hBox.setPadding(new Insets(10,10,10,10));
         hBox.setSpacing(10);
         hBox.getChildren().addAll(characternameInput, initiativerollInput, extranotesInput, dexscoreInput, addButton, deleteButton);
 
-        //Get TableItems.
-        table = new TableView<>();
-        table.setItems(getProduct());
-        table.getColumns().addAll(CharacterNameColumn, InitiativeRollColumn, ExtraNotesColumn, DexScoreColumn, InitiativeListColumn);
-         /**Reversing the sort order, such that the highest initiative will be first.
-         The program will always default to this sort order if the list is refreshed.
-         This will result in the user losing their self-selected sorting order, if they've made one.
-         */
-        InitiativeListColumn.setComparator(InitiativeListColumn.getComparator().reversed());
-        table.getSortOrder().add(InitiativeListColumn);
+
         //VBox.
         VBox vBox = new VBox();
         vBox.getChildren().addAll(table, hBox);
@@ -114,7 +138,9 @@ public class Main extends Application {
         window.show();
     }
 
-    //Add button clicked
+    /**
+     * Functionality of the "Add" button.
+     */
     public void addButtonClicked(){
         Product product = new Product();
         product.setCharacterName(characternameInput.getText());
@@ -131,42 +157,57 @@ public class Main extends Application {
             System.out.println("Non-numeric value inserted in numeric field or a field was left blank; Please try again.");
 
         }
-        table.getSortOrder().addAll(getColumn(sortedColumn));
+        //Force sort when table is updated
+        forceSortColumn(sortedColumn);
         characternameInput.clear();
         initiativerollInput.clear();
         extranotesInput.clear();
         dexscoreInput.clear();
     }
 
-    //Delete button clicked
+    /**
+     * Functionality of the "delete" button
+     */
     public void deleteButtonClicked(){
         ObservableList<Product> productSelected, allProducts;
         allProducts = table.getItems();
         productSelected = table.getSelectionModel().getSelectedItems();
         productSelected.forEach(allProducts::remove);
+        forceSortColumn(sortedColumn);
     }
 
-    //Get all of the products
+    /**
+     * Initial population method
+     * @return List of pre-populated products
+     */
     public ObservableList<Product> getProduct(){
         ObservableList<Product> products = FXCollections.observableArrayList();
         products.add(new Product("Nicolai er gud", "20*", "Og det ved alle", 18));
-        products.add(new Product("Jakob er gud", "21*", "Du ved det Nico", 21));
+        products.add(new Product("Jakob er gud", "24*", "Du ved det Nico", 24));
 
         return products;
     }
 
-    /** Gets a column from the TableView table, the argument is the name of the column (Not the PropertyValueFactory name).
+    /** Gets a column from the TableView table
      *
-     * @param s
-     * @return TableColumn found in the list of tables, matching the parameter s. If none is found, it returns null.
+     * @param s is the name of the column (Not the PropertyValueFactory name)
+     * @return TableColumn found in the list of tables, matching the parameter s. If none is found, it returns null
      */
-    public TableColumn getColumn(String s){
+    private TableColumn getColumn(String s){
         for(int i = 0; i < table.getColumns().size();i++){
             if(table.getColumns().get(i).getText()== s){
                 return table.getColumns().get(i);
             }
         }
         return null;
+    }
+
+    /**
+     * @TODO Har muligvis ikke fuld funktionalitet, hvis den skal sorte når brugeren allerede har brugt sorterings-pilen.
+     * @param columnName
+     */
+    private void forceSortColumn(String columnName){
+        table.getSortOrder().addAll(getColumn(columnName));
     }
 
 }
