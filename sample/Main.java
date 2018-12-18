@@ -1,5 +1,3 @@
-package sample;
-
 // Import of libraries.
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -23,6 +21,7 @@ public class Main extends Application {
     TableView<Product> table;
     TextField characternameInput, initiativerollInput, dexscoreInput, extranotesInput;
     String sortedColumn = "Initiative List";
+    Stage stage;
 
     // Main function call.
     public static void main(String[] args) {
